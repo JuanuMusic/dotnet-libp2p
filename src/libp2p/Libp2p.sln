@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libp2p.Protocols.Quic.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multiformats.Address", "..\cs-multiaddress\src\Multiformats.Address\Multiformats.Address.csproj", "{1C7EF4B1-E314-46C7-99EC-16C7B20A1618}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.UI", "..\samples\Samples.UI\Samples.UI.csproj", "{674CA169-A852-4E01-A200-FA49EDDF09BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +171,10 @@ Global
 		{1C7EF4B1-E314-46C7-99EC-16C7B20A1618}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C7EF4B1-E314-46C7-99EC-16C7B20A1618}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C7EF4B1-E314-46C7-99EC-16C7B20A1618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{674CA169-A852-4E01-A200-FA49EDDF09BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{674CA169-A852-4E01-A200-FA49EDDF09BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{674CA169-A852-4E01-A200-FA49EDDF09BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{674CA169-A852-4E01-A200-FA49EDDF09BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -191,6 +197,7 @@ Global
 		{E4103D59-03EB-488A-8392-0D2FBE3FBCC3} = {6F3D9AA9-C92D-4998-BC4E-D5EA068E8D0D}
 		{FC0E9BCE-2848-45DC-AE20-FB7E862A199E} = {6F3D9AA9-C92D-4998-BC4E-D5EA068E8D0D}
 		{EEECB761-A3C3-4598-AD03-EFABBF6CAA77} = {6F3D9AA9-C92D-4998-BC4E-D5EA068E8D0D}
+		{674CA169-A852-4E01-A200-FA49EDDF09BE} = {0DC1C6A1-0A5B-43BA-9605-621C21A16716}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E337E37C-3DB8-42FA-9A83-AC4E3B2557B4}
