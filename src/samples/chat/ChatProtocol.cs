@@ -7,28 +7,39 @@ using Nethermind.Libp2p.Core;
 
 internal class ChatProtocol : SymmetricProtocol, IProtocol
 {
-    private static readonly ConsoleReader Reader = new();
-    public string Id => "/chat/1.0.0";
+    IChannel _channel;
+    // On message received event
+    public event Action<ReadOnlySequence<byte>>? OnMessageReceived;
 
-    protected override async Task ConnectAsync(IChannel channel, IChannelFactory channelFactory,
+    //private static readonly ConsoleReader Reader = new();
+    public string Id => "/chat/1.0.0";
+    
+
+    protected override async Task ConnectAsync(IChannel channel, IChannelFactory? channelFactory,
         IPeerContext context, bool isListener)
     {
-        Console.Write("> ");
-        _ = Task.Run(async () =>
-        {
-            while (!channel.Token.IsCancellationRequested)
-            {
-                ReadOnlySequence<byte> read =
-                    await channel.ReadAsync(0, ReadBlockingMode.WaitAny, channel.Token);
-                Console.Write(Encoding.UTF8.GetString(read).Replace("\n\n", "\n> "));
-            }
-        }, channel.Token);
+        Console.WriteLine("Connected to peer...");
+        _channel = channel;
+        
         while (!channel.Token.IsCancellationRequested)
         {
-            string line = await Reader.ReadLineAsync(channel.Token);
-            Console.Write("> ");
-            byte[] buf = Encoding.UTF8.GetBytes(line + "\n\n");
-            await channel.WriteAsync(new ReadOnlySequence<byte>(buf));
+            ReadOnlySequence<byte> read =
+                await channel.ReadAsync(0, ReadBlockingMode.WaitAny, channel.Token);
+            
+            if (OnMessageReceived != null)
+                OnMessageReceived(read);
+            
+            //Console.Write(Encoding.UTF8.GetString(read).Replace("\n\n", "\n> "));
+        }
+    }
+
+    public async Task SendMessage(string message)
+    {
+        if (!_channel.Token.IsCancellationRequested)
+        {
+            //Console.Write("> :) ");
+            byte[] buf = Encoding.UTF8.GetBytes(message);
+            await _channel.WriteAsync(new ReadOnlySequence<byte>(buf));
         }
     }
 }

@@ -16,6 +16,8 @@
         <PackageReference Include="Google.Protobuf.Tools" Version="3.24.1" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+        <PackageReference Include="Terminal.Gui" Version="1.14.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\libp2p\Libp2p.Core\Libp2p.Core.csproj" />
@@ -25,6 +27,7 @@
         <ProjectReference Include="..\..\libp2p\Libp2p.Protocols.Plaintext\Libp2p.Protocols.Plaintext.csproj" />
         <ProjectReference Include="..\..\libp2p\Libp2p.Protocols.Yamux\Libp2p.Protocols.Yamux.csproj" />
         <ProjectReference Include="..\..\libp2p\Libp2p\Libp2p.csproj" />
+        <ProjectReference Include="..\Samples.UI\Samples.UI.csproj" />
     </ItemGroup>
 
 </Project>
