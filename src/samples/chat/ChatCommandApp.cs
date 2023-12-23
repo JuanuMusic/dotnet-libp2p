@@ -1,6 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+using Multiformats.Address;
 using Spectre.Console;
-using Spectre.Console.Cli;
 
 namespace Chat;
 
@@ -37,7 +36,7 @@ public class ChatCommandApp
         AnsiConsole.Write(_root);
     }
 
-    public void AddChatHistory(string from, string message) {
+    public void AddChatHistory(Multiaddress from, string message) {
         _chatHistory += Environment.NewLine + $"[grey]{from}[/]: {message}";
         // Update the left column
         _chatHistoryPanel.Update(    
