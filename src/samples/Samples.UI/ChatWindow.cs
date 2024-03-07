@@ -28,7 +28,6 @@ namespace Samples.UI
         public ChatWindow(ChatWindowConfig config)
         {
             InitializeComponent();
-
         }
 
         public void AddPeer(string user)
@@ -47,7 +46,7 @@ namespace Samples.UI
                 {
                     _messages.Add($"{from}: {message}");
                     _chatList.SetSource(_messages);
-                    chatListView.Text = "";
+                    chatTextView.Text = "";
                 });
         }
 
@@ -56,7 +55,7 @@ namespace Samples.UI
             Application.MainLoop.Invoke(() =>
                 {
                     _debugMessages.Add($"{logMessage}");
-                    listLogMessages.SetSource(_debugMessages);
+                    logsTextView.Text = string.Join(Environment.NewLine,_debugMessages);
                 });
         }
     }

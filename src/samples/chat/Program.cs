@@ -20,10 +20,12 @@ Console.WriteLine("Initializing chat window...");
 
 
 
-var chatWindow = new ChatWindow(new ChatWindowConfig{
+var chatWindow = new ChatWindow(new ChatWindowConfig
+{
     Title = "Chat",
     LocalUser = "Juanu",
-    OnSendMessage = async (msg) => {
+    OnSendMessage = async (msg) =>
+    {
         await chatProtocol.SendMessage(msg);
     }
 });
@@ -47,54 +49,60 @@ chatProtocol.OnMessageReceived += (msg) =>
 
 IPeerFactory peerFactory = serviceProvider.GetService<IPeerFactory>()!;
 
-ILogger logger = new ChatLogger(chatWindow.AddDebug);
+ChatLogger logger = new ChatLogger(chatWindow.AddDebug);
 CancellationTokenSource ts = new();
-
-
-if (args.Length > 0 && args[0] == "-d")
-{
-    Multiaddress remoteAddr = args[1];
-
-    string addrTemplate = remoteAddr.Has<QUICv1>() ?
-       "/ip4/0.0.0.0/udp/0/quic-v1" :
-       "/ip4/0.0.0.0/tcp/0";
-
-    ILocalPeer localPeer = peerFactory.Create(localAddr: addrTemplate);
-    
-    logger.LogInformation($"Dialing {remoteAddr}");
-    IRemotePeer remotePeer = await localPeer.DialAsync(remoteAddr, ts.Token);
-    chatWindow.AddPeer(remotePeer.Address.ToString());
-    await remotePeer.DialAsync<ChatProtocol>(ts.Token);
-    await remotePeer.DisconnectAsync();
-}
-else
-{
-    Identity optionalFixedIdentity = new(Enumerable.Repeat((byte)42, 32).ToArray());
-    ILocalPeer peer = peerFactory.Create(optionalFixedIdentity);
-
-    string addrTemplate = args.Contains("-quic") ?
-        "/ip4/0.0.0.0/udp/{0}/quic-v1/p2p/{1}" :
-        "/ip4/0.0.0.0/tcp/{0}/p2p/{1}";
-
-    Console.WriteLine("Starting to listen...");
-    IListener listener = await peer.ListenAsync(
-        string.Format(addrTemplate, args.Length > 0 && args[0] == "-sp" ? args[1] : "0", peer.Identity.PeerId),
-        ts.Token);
-    Console.WriteLine("Listener started...");
-    logger.LogInformation($"Listener started at {listener.Address}");
-    
-    listener.OnConnection += remotePeer => {
-        return Task.Run(() =>{
-            logger.LogInformation($"A peer connected {remotePeer.Address}");
-            chatWindow.AddPeer(remotePeer.Address.ToString());
-        });
-    };
-
-    Console.CancelKeyPress += delegate { listener.DisconnectAsync(); };
-
-    await listener;
-}
 
 Application.Init();
 Application.Top.Add(chatWindow);
+
+Application.Top.Ready += async () =>
+{
+    if (args.Length > 0 && args[0] == "-d")
+    {
+        Multiaddress remoteAddr = args[1];
+
+        string addrTemplate = remoteAddr.Has<QUICv1>() ?
+           "/ip4/0.0.0.0/udp/0/quic-v1" :
+           "/ip4/0.0.0.0/tcp/0";
+        ILocalPeer localPeer = peerFactory.Create(localAddr: addrTemplate);
+
+        logger.LogInformation($"Dialing {remoteAddr}");
+        IRemotePeer remotePeer = await localPeer.DialAsync(remoteAddr, ts.Token);
+        chatWindow.AddPeer(remotePeer.Address.ToString());
+        await remotePeer.DialAsync<ChatProtocol>(ts.Token);
+        await remotePeer.DisconnectAsync();
+    }
+    else
+    {
+        Identity optionalFixedIdentity = new(Enumerable.Repeat((byte)42, 32).ToArray());
+        ILocalPeer peer = peerFactory.Create(optionalFixedIdentity);
+
+        string addrTemplate = args.Contains("-quic") ?
+            "/ip4/0.0.0.0/udp/{0}/quic-v1/p2p/{1}" :
+            "/ip4/0.0.0.0/tcp/{0}/p2p/{1}";
+
+        logger.LogInformation("Starting to listen...");
+        IListener listener = await peer.ListenAsync(
+            string.Format(addrTemplate, args.Length > 0 && args[0] == "-sp" ? args[1] : "0", peer.Identity.PeerId),
+            ts.Token);
+        logger.LogInformation("Listener started...");
+        logger.LogInformation($"Listener started at {listener.Address}");
+
+        listener.OnConnection += remotePeer =>
+        {
+            return Task.Run(() =>
+            {
+                logger.LogInformation($"A peer connected {remotePeer.Address}");
+                chatWindow.AddPeer(remotePeer.Address.ToString());
+            });
+        };
+
+        Console.CancelKeyPress += delegate { listener.DisconnectAsync(); };
+
+        await listener;
+    }
+
+};
+
 Application.Run(Application.Top);
+
